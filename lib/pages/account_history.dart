@@ -24,7 +24,8 @@ class AccountHistory extends StatelessWidget {
         children: <Widget>[
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white, backgroundColor: Colors.green,
+              //foregroundColor: Colors.white,
+              //backgroundColor: Colors.green,
               shadowColor: Colors.greenAccent,
               elevation: 3,
               shape: RoundedRectangleBorder(
