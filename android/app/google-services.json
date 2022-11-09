@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "873614776209",
+    "project_id": "bank-app-92995",
+    "storage_bucket": "bank-app-92995.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873614776209:android:5fd2cd0a4139883913ec30",
+        "android_client_info": {
+          "package_name": "no.ntnu.bank_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873614776209-4slghap1fe4o9bdlidfet7ugfrg93r3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "no.ntnu.bank_app",
+            "certificate_hash": "a55084eda7683d72f81f0d677e96c0b41b2cfe20"
+          }
+        },
+        {
+          "client_id": "873614776209-krle0gb5i1hnf18hddth6s7hlmohhbje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGuQy9zJgVeKGN7u9Df4vvwT2cGlRq_l4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873614776209-krle0gb5i1hnf18hddth6s7hlmohhbje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

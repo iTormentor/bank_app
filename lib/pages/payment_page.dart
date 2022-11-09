@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Payment extends StatelessWidget{
+
+
   @override
   Widget build(BuildContext context) {
-    return Text("Payment");
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Payment"),
+      ),
+    );
   }
 
 
