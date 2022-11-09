@@ -1,5 +1,6 @@
 import 'package:bank_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:bank_app/app/sign_in/sign_in_page.dart';
 
 
 void main() {
@@ -7,17 +8,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Banken',
+
+      debugShowCheckedModeBanner: false,
+      title: "BankApp",
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: HomePage(),
+      home: const SignInPage(),
     );
   }
 }
