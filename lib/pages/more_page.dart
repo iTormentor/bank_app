@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Overview extends StatelessWidget{
+class More extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return Text("Overview");
+    return Text("More");
   }
 
 
