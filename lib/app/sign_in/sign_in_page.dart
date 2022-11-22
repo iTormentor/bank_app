@@ -38,8 +38,8 @@ class SignInPage extends StatelessWidget {
           ElevatedButton(
             child: const Text("Sign in with email"),
             onPressed: () {
-              Navigator.pushReplacement<void, void>(context,
-                  MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+              HomePage()));
             },
           ),
         ],
