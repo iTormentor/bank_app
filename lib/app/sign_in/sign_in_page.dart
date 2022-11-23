@@ -1,10 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/home_page.dart';
+import 'dart:developer';
 
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+  const SignInPage({super.key, required this.onSignIn});
+  final void Function(User?) onSignIn;
+
+
+  Future<void> _signInAnonymously() async{
+    try {
+      final userCredentials = await FirebaseAuth.instance.signInAnonymously();
+      if(userCredentials.user != null) {
+        onSignIn(userCredentials.user);
+      }
+    } on Exception catch (e) {
+       print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +57,14 @@ class SignInPage extends StatelessWidget {
               HomePage()));
             },
           ),
+          const SizedBox(height: 8.0),
+          ElevatedButton(
+            child: const Text("Sign in anonymously"),
+            onPressed:
+              _signInAnonymously
+            ,
+          ),
+
         ],
       ),
     );
