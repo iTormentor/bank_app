@@ -1,3 +1,4 @@
+import 'package:bank_app/app/sign_in/sign_in_page.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/app_bar.dart';
@@ -11,7 +12,9 @@ class MorePage extends StatelessWidget{
       appBar: AppBar(
         title: const Text("More"),
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.logout))
+          IconButton(onPressed: (){
+            Navigator.of(context, rootNavigator: true).pop();
+          }, icon: const Icon(Icons.logout))
         ],
       ),
     );
