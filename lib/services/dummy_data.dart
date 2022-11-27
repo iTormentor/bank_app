@@ -1,7 +1,13 @@
 class DummyData {
 
+  static final DummyData _instance = DummyData._();
   final List<User> allUsers = [];
 
+  static DummyData getInstance() {
+    return _instance;
+  }
+
+  DummyData._();
 
   void initializeDummyData() {
     final user1 = User("Per", "per@per.no");
@@ -10,8 +16,8 @@ class DummyData {
     allUsers.add(user1);
     allUsers.add(user2);
 
-    user1.createNewWallet("Savingsaccount", balance: 100000);
-    user1.createNewWallet("Spendingsaccount", balance: 2000);
+    user1.createNewWallet("Savings account", balance: 100000.0);
+    user1.createNewWallet("Spendings account", balance: 2000.0);
   }
 
 
@@ -58,7 +64,7 @@ class Wallet {
   double balance;
   String accountName;
 
-  Wallet(this.owner, this.accountName, {this.balance = 1000}) : walletId = _walletNumber++;
+  Wallet(this.owner, this.accountName, {this.balance = 1000.0}) : walletId = _walletNumber++;
 }
 
 

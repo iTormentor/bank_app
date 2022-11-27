@@ -11,7 +11,7 @@ class MorePage extends StatelessWidget{
 
   Future<void> _signOut(BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signOut();
+      //await FirebaseAuth.instance.signOut();
       Navigator.of(context, rootNavigator: true).pop();
     } catch (e) {
 

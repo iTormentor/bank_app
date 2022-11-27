@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../services/dummy_data.dart';
+
 class AccountHistory extends StatelessWidget {
-  const AccountHistory({super.key});
+  final Wallet wallet;
+
+
+  const AccountHistory({super.key, required Wallet this.wallet});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,7 @@ class AccountHistory extends StatelessWidget {
               minimumSize: const Size(100, 200), //////// HERE
             ),
             onPressed: () {},
-            child: const Text('Spending Balance: 10000kr'),
+            child: Text("Spending Balance: ${wallet.balance} kr"),
           ),
         ],
       ),

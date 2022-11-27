@@ -1,10 +1,12 @@
 import 'package:bank_app/pages/landing_page.dart';
+import 'package:bank_app/services/dummy_data.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DummyData.getInstance().initializeDummyData();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
