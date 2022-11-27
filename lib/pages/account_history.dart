@@ -6,7 +6,7 @@ class AccountHistory extends StatelessWidget {
   final Wallet wallet;
 
 
-  const AccountHistory({super.key, required Wallet this.wallet});
+  const AccountHistory({super.key, required this.wallet});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,44 @@ class AccountHistory extends StatelessWidget {
             onPressed: () {},
             child: Text("Spending Balance: ${wallet.balance} kr"),
           ),
+          SizedBox(height: 16,),
+          const Text("Transactions",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+
+          ),),
+          _buildTransactionItems()
         ],
       ),
+    );
+  }
+
+  Widget _buildTransactionItems() {
+    return StreamBuilder<List<Transaction>>(stream: wallet.fetchTransactions(),
+    builder: (context, snapshot){
+      if(snapshot.hasData){
+        return Column(
+          children:
+            snapshot.data!.map<Widget>((transaction) => _transactionItem(transaction)).toList(),
+        );
+      } else {
+        return Card();
+      }
+    });
+  }
+
+  Widget _transactionItem(Transaction transaction){
+    Wallet wallet = DummyData.getInstance().fetchWallet(transaction.destinationWalletID);
+    return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(children: [
+            Text(wallet.accountName),
+            Text("${transaction.amount}"),
+          ],),
+        )
     );
   }
 }

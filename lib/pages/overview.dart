@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../services/dummy_data.dart';
 
-class Overview extends StatelessWidget{
+class Overview extends StatelessWidget {
 
 
   @override
@@ -14,22 +14,38 @@ class Overview extends StatelessWidget{
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: buildContent(context),
+        children: [buildContent(context)],
       ),
     );
   }
 
-  List<Widget> buildContent(BuildContext context) {
-    List<Widget> widgets = [SizedBox(height: 8)];
-    for(Wallet wallet in DummyData.getInstance().getAllWalletsForUser(1)){
-      widgets.add(ElevatedButton(
-          onPressed: (){
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AccountHistory(wallet: wallet))) ;
-          }, child: Text("Hi")));
-    }
-    return widgets;
+
+  Widget buildContent(BuildContext context) {
+    return StreamBuilder<List<Wallet>>(
+        stream: DummyData.getInstance().getAllWalletsForUser(1),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+                children:
+                snapshot.data!.map<Widget>((wallet) =>
+                    _walletItem(context, wallet)).toList(),
+            );
+          } else {
+            return Text("You dont have any yet");
+          }
+        });
   }
 
+  Widget _walletItem(BuildContext context, Wallet wallet) {
+    return ElevatedButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => AccountHistory(wallet: wallet)));
+        }, child: Text("${wallet.accountName}: ${wallet.balance} kr"));
+  }
 
 }
+
+
+
