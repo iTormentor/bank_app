@@ -5,6 +5,7 @@ class DummyData {
   static final DummyData _instance = DummyData._();
   final List<User> allUsers = [];
   final List<Wallet> allWallets = [];
+  final List<Transaction> allTransactions = [];
 
   static DummyData getInstance() {
     return _instance;
@@ -15,6 +16,8 @@ class DummyData {
   void initializeDummyData() {
     final unknownUser = User("Unkown", "Unkown");
     final unknownWallet = Wallet(unknownUser, "Unknown receiver");
+    final storeWallet1 = Wallet(unknownUser, "Coop Prix SA");
+    final storeWallet2 = Wallet(unknownUser, "SPAR Norge AS");
     final user1 = User("Per", "per@per.no");
     final user2 = User("Ole", "ole@ole.no");
 
@@ -22,10 +25,19 @@ class DummyData {
     allUsers.add(user1);
     allUsers.add(user2);
     allWallets.add(unknownWallet);
+    allWallets.add(storeWallet1);
+    allWallets.add(storeWallet2);
 
-    user1.createNewWallet("Savings account", balance: 100000.0);
-    user1.createNewWallet("Spendings account", balance: 2000.0);
 
+
+    Wallet wallet1 = user1.createNewWallet("Savings account", balance: 100000.0);
+    Wallet wallet2 = user1.createNewWallet("Spendings account", balance: 2000.0);
+
+    Transaction(wallet1, 100, 2);
+    Transaction(wallet1, 59.0, 5, dateTime: DateTime.utc(2022, 11, 20));
+    Transaction(wallet1, 50, 2, dateTime:  DateTime.utc(2022, 10, 5));
+
+    Transaction(wallet2, 100000, 0);
 
 
   }
@@ -69,10 +81,11 @@ class User {
 
   User(this.name, this.email) : userId = _totalUsers++;
 
-  void createNewWallet(String walletName, {balance}){
+  Wallet createNewWallet(String walletName, {balance}){
     Wallet newWallet = Wallet(this, walletName, balance: balance);
     wallets.add(newWallet);
     DummyData.getInstance().allWallets.add(newWallet);
+    return newWallet;
   }
 
   }
@@ -94,15 +107,21 @@ class Wallet {
     controller.close();
     return controller.stream;
   }
+
 }
 
 class Transaction {
   Wallet wallet;
-  DateTime dateTime;
+  DateTime dateTime = DateTime.now();
   double amount;
   int destinationWalletID;
 
-  Transaction(this.wallet, this.dateTime, this.amount, this.destinationWalletID);
+  Transaction(this.wallet, this.amount, this.destinationWalletID, {dateTime}){
+    if (dateTime != null){
+      this.dateTime = dateTime;
+    }
+    wallet.transactions.add(this);
+  }
 }
 
 

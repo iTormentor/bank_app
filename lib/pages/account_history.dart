@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../services/dummy_data.dart';
+
 
 class AccountHistory extends StatelessWidget {
   final Wallet wallet;
@@ -63,21 +64,42 @@ class AccountHistory extends StatelessWidget {
             snapshot.data!.map<Widget>((transaction) => _transactionItem(transaction)).toList(),
         );
       } else {
-        return Card();
+        return Text("Halla");
       }
     });
   }
 
   Widget _transactionItem(Transaction transaction){
     Wallet wallet = DummyData.getInstance().fetchWallet(transaction.destinationWalletID);
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return Card(
+        color: Colors.grey[200],
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: Row(children: [
-            Text(wallet.accountName),
-            Text("${transaction.amount}"),
-          ],),
+          child: Column(
+            children: [
+              Text("${dateFormat.format(transaction.dateTime)} ${getWeekday(transaction.dateTime.weekday)}"),
+              Row(children: [
+                Text(wallet.accountName),
+                const Spacer(),
+                Text("${transaction.amount}"),
+              ],),
+            ],
+          ),
         )
     );
+  }
+
+  String getWeekday(int day){
+    switch(day) {
+      case 1: return "Monday";
+      case 2: return "Tuesday";
+      case 3: return "Wednesday";
+      case 4: return "Thursday";
+      case 5: return "Friday";
+      case 6: return "Saturday";
+      case 7: return "Sunday";
+      default: return "Wrong input";
+    }
   }
 }
