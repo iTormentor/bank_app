@@ -91,7 +91,7 @@ class User {
   }
 
 class Wallet {
-  static int _walletNumber = 1;
+  static int _walletNumber = 18225512345;
 
   final User owner;
   final int walletId;

@@ -23,7 +23,6 @@ class AccountHistory extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        //mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildAccountCard(),
@@ -34,9 +33,7 @@ class AccountHistory extends StatelessWidget {
             "Transactions",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-            ),
+                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
           _buildTransactionItems()
         ],
@@ -53,14 +50,29 @@ class AccountHistory extends StatelessWidget {
       child: SizedBox(
         height: 100,
         width: 300,
-        child: Center(
-          child: Text(
-            "Spending Balance: ${wallet.balance} kr",
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              wallet.accountName,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Text(
+                "${wallet.balance} kr",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -77,7 +89,7 @@ class AccountHistory extends StatelessWidget {
                   .toList(),
             );
           } else {
-            return Text("Halla");
+            return const Text("No transactions found");
           }
         });
   }
