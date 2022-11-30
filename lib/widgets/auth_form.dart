@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/sign_in/auth_screen.dart';
@@ -60,13 +59,19 @@ class _AuthFormState extends State<AuthForm> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   if (widget.authType == AuthType.login) {
-                    await authBase.loginWithEmailAndPassword(_email, _password);
+                    dynamic result = await authBase.loginWithEmailAndPassword(_email, _password);
                     if(FirebaseAuth.instance.currentUser != null) {
                       Navigator.of(context).pushReplacementNamed('home');
+                    } else {
+                        _loginFailedAlert(context, "login",result);
                     }
                   } else {
-                    await authBase.registerWithEmailAndPassword(_email, _password);
-                    Navigator.of(context).pushReplacementNamed('home');
+                    dynamic result = await authBase.registerWithEmailAndPassword(_email, _password);
+                    if(FirebaseAuth.instance.currentUser?.uid != null) {
+                      Navigator.of(context).pushReplacementNamed('home');
+                    } else {
+                      _loginFailedAlert(context, "register",result);
+                    }
                   }
                 }
               },
@@ -93,4 +98,29 @@ class _AuthFormState extends State<AuthForm> {
       ),
     );
   }
+
+  Future<void> _loginFailedAlert(BuildContext context, String type, dynamic result) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Failed to $type'),
+          content: Text(result.message),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+

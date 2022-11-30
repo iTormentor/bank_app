@@ -15,30 +15,30 @@ class AuthBase {
     return User1(uid: user.uid);
   }
 
-  Future<User1?> registerWithEmailAndPassword(
+  dynamic registerWithEmailAndPassword(
       String email, String password) async {
     try {
       final authResult = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       return _userFromFirebase(authResult.user);
-    } catch (e) {
-      print(e.toString());
-      return null;
+    } on FirebaseAuthException catch (e) {
+      return e;
     }
   }
 
-  Future<User1?> loginWithEmailAndPassword(String email, String password) async {
+  dynamic loginWithEmailAndPassword(String email, String password) async {
+
     try {
       final authResult = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       return _userFromFirebase(authResult.user);
-    } catch (e) {
-      print(e.toString());
-      return null;
+    } on FirebaseAuthException catch (e){
+        return e;
+      }
     }
   }
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
   }
-}
+
