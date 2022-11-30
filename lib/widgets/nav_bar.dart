@@ -21,7 +21,7 @@ class CustomNavigationBar extends StatelessWidget {
       TabItem.overview: (_) => Overview(),
       TabItem.transfer: (_) => Transfer(),
       TabItem.payment: (_) => Payment(),
-      TabItem.more: (_) => MorePage(),
+      TabItem.more: (_) => const MorePage(),
     };
   }
 
