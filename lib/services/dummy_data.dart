@@ -7,6 +7,8 @@ class DummyData {
   final List<Wallet> allWallets = [];
   final List<Transaction> allTransactions = [];
 
+  User? loggedInUser;
+
   static DummyData getInstance() {
     return _instance;
   }
@@ -14,12 +16,12 @@ class DummyData {
   DummyData._();
 
   void initializeDummyData() {
-    final unknownUser = User("Unkown", "Unkown");
+    final unknownUser = User("Unkown","receiver", "none");
     final unknownWallet = Wallet(unknownUser, "Unknown receiver");
     final storeWallet1 = Wallet(unknownUser, "Coop Prix SA");
     final storeWallet2 = Wallet(unknownUser, "SPAR Norge AS");
-    final user1 = User("Per", "per@per.no");
-    final user2 = User("Ole", "ole@ole.no");
+    final user1 = User("Per","Pedersen", "per@pedersen.no");
+    final user2 = User("Ole","Pettersen", "ole@pettersen.no");
 
     allUsers.add(unknownUser);
     allUsers.add(user1);
@@ -30,8 +32,8 @@ class DummyData {
 
 
 
-    Wallet wallet1 = user1.createNewWallet("Savings account", balance: 100000.0);
-    Wallet wallet2 = user1.createNewWallet("Spendings account", balance: 2000.0);
+    Wallet wallet1 = user1.createNewWallet("Saving account", balance: 100000.0);
+    Wallet wallet2 = user1.createNewWallet("Spending account", balance: 2000.0, spendingAccount: true);
 
     Transaction(wallet1, 100, 2);
     Transaction(wallet1, 59.0, 5, dateTime: DateTime.utc(2022, 11, 20));
@@ -66,6 +68,10 @@ class DummyData {
       controller.close();
       return controller.stream;
     }
+
+  User? getLoggedInUser() {
+    return loggedInUser;
+  }
   }
 
 
@@ -73,16 +79,18 @@ class DummyData {
 class User {
 
   static int _totalUsers = 0;
-
   final int userId;
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
   List<Wallet> wallets = [];
 
-  User(this.name, this.email) : userId = _totalUsers++;
+  User(this.firstName,this.lastName, this.email) : userId = _totalUsers++;
 
-  Wallet createNewWallet(String walletName, {balance}){
-    Wallet newWallet = Wallet(this, walletName, balance: balance);
+  Wallet createNewWallet(String walletName, {balance, spendingAccount}){
+    Wallet newWallet = Wallet(this, walletName,
+        balance: balance ?? 0,
+        spendingAccount: spendingAccount ?? false);
     wallets.add(newWallet);
     DummyData.getInstance().allWallets.add(newWallet);
     return newWallet;
@@ -92,14 +100,19 @@ class User {
 
 class Wallet {
   static int _walletNumber = 18225512345;
-
+  final bool spendingAccount;
+  bool cardActive = false;
   final User owner;
   final int walletId;
   final List<Transaction> transactions = [];
   double balance;
   String accountName;
 
-  Wallet(this.owner, this.accountName, {this.balance = 1000.0}) : walletId = _walletNumber++;
+  Wallet(this.owner, this.accountName,
+      {this.balance = 1000.0, this.spendingAccount = false})
+      : walletId = _walletNumber++{
+    cardActive = spendingAccount;
+  }
 
   Stream<List<Transaction>> fetchTransactions(){
     final controller = StreamController<List<Transaction>>();

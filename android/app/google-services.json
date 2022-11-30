@@ -37,6 +37,13 @@
             {
               "client_id": "873614776209-krle0gb5i1hnf18hddth6s7hlmohhbje.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "873614776209-31um5u739di406vsps4e14j7guotrtif.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "no.ntnu.bankApp"
+              }
             }
           ]
         }
