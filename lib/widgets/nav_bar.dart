@@ -2,10 +2,12 @@ import 'package:bank_app/pages/more_page.dart';
 import 'package:bank_app/pages/overview.dart';
 import 'package:bank_app/pages/transfer_page.dart';
 import 'package:bank_app/services/tab_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/payment_page.dart';
+import '../services/database.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   const CustomNavigationBar({
@@ -18,7 +20,7 @@ class CustomNavigationBar extends StatelessWidget {
 
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
-      TabItem.overview: (_) => Overview(),
+      TabItem.overview: (_) => const Overview(),
       TabItem.transfer: (_) => Transfer(),
       TabItem.payment: (_) => Payment(),
       TabItem.more: (_) => const MorePage(),
@@ -41,9 +43,8 @@ class CustomNavigationBar extends StatelessWidget {
       tabBuilder: (BuildContext context, int index) {
         final item = TabItem.values[index];
         return CupertinoTabView(
-          builder: (context) => widgetBuilders[item]!(context));
-          },
-        );
-      }
-
+            builder: (context) => widgetBuilders[item]!(context));
+      },
+    );
   }
+}

@@ -1,14 +1,27 @@
 import 'package:bank_app/pages/account_history.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../services/database.dart';
 import '../services/dummy_data.dart';
 
 class Overview extends StatelessWidget {
+  const Overview({super.key});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Overview"),
+        actions: [
+          IconButton(
+            onPressed: () {_newAccountDialog(context);},
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -19,16 +32,17 @@ class Overview extends StatelessWidget {
 
   Widget buildContent(BuildContext context) {
     return StreamBuilder<List<Wallet>>(
-        stream: DummyData.getInstance().getAllWalletsForUser(1),
+        stream: DummyData.getInstance().getAllWalletsForUser(0),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          bool? empty = snapshot.data?.isEmpty;
+          if (snapshot.hasData && !empty!) {
             return Column(
               children: snapshot.data!
                   .map<Widget>((wallet) => _walletItem(context, wallet))
                   .toList(),
             );
           } else {
-            return Text("You dont have any yet");
+            return _showNoAccounts();
           }
         });
   }
@@ -74,7 +88,7 @@ class Overview extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: getStyle(12),
                 ),
-                Spacer(),
+                const Spacer(),
               ],
             ),
           ],
@@ -89,5 +103,83 @@ class Overview extends StatelessWidget {
       fontWeight: FontWeight.w600,
       fontSize: size,
     );
+  }
+
+  Widget _showNoAccounts() {
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        Card(
+          color: Colors.grey[400],
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              const Icon(
+                IconData(0xf655,
+                    fontFamily: CupertinoIcons.iconFont,
+                    fontPackage: CupertinoIcons.iconFontPackage),
+              ),
+              Row(
+                children: [
+                  const Spacer(),
+                  Text(
+                    "Seems like you don't have any accounts opened yet!",
+                    style: getStyle(16),
+                  ),
+                  const Spacer()
+                ],
+              ),
+              Text(
+                "Click the plus sign to apply for an account",
+                style: getStyle(16),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Future<void> _newAccountDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Create new account',
+          textAlign: TextAlign.center,),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                _createAccount(context);
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _createAccount(BuildContext context) async {
+        await Database.getInstance().createAccount({
+        "accountName": "name",
+        "spendingsAccount": "spending",
+        "activeCard": "spending",
+        "balance" : 1000.0,
+    });
   }
 }

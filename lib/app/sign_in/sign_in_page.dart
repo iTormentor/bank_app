@@ -59,10 +59,10 @@ class SignInPage extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           ElevatedButton(
-            child: const Text("Sign in anonymously"),
             onPressed:
               _signInAnonymously
             ,
+            child: const Text("Sign in anonymously"),
           ),
 
         ],

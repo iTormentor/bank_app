@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../pages/sign_in/auth_screen.dart';
 import '../services/auth.dart';
+import '../services/database.dart';
 import 'my_button.dart';
 
 class AuthForm extends StatefulWidget {
@@ -60,17 +61,20 @@ class _AuthFormState extends State<AuthForm> {
                 if (_formKey.currentState!.validate()) {
                   if (widget.authType == AuthType.login) {
                     dynamic result = await authBase.loginWithEmailAndPassword(_email, _password);
-                    if(FirebaseAuth.instance.currentUser != null) {
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if(currentUser != null) {
+                      Database.getInstance().uid = currentUser.uid;
                       Navigator.of(context).pushReplacementNamed('home');
                     } else {
-                        _loginFailedAlert(context, "login",result);
+                      Database.getInstance().uid = "";
+                        _loginFailedAlert(context, "login", result);
                     }
                   } else {
                     dynamic result = await authBase.registerWithEmailAndPassword(_email, _password);
                     if(FirebaseAuth.instance.currentUser?.uid != null) {
                       Navigator.of(context).pushReplacementNamed('home');
                     } else {
-                      _loginFailedAlert(context, "register",result);
+                      _loginFailedAlert(context, "register", result);
                     }
                   }
                 }

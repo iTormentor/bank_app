@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/app_bar.dart';
+import '../services/database.dart';
 import 'about_page.dart';
 
 class MorePage extends StatelessWidget {
@@ -10,6 +9,7 @@ class MorePage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
+      Database.getInstance().uid = "";
       Navigator.of(context, rootNavigator: true).pushReplacementNamed('login');
     } catch (e) {
       print(e);
