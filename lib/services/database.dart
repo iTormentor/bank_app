@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Database {
 
   static final Database _instance = Database._();
   String uid = "0";
-  static int nextAccount = 18225512350;
 
   static Database getInstance(){
     return _instance;
@@ -12,23 +13,29 @@ class Database {
 
   Database._();
 
-  Future<void> createWallet(Wallet wallet) async{
+  int newAccountNumber(){
+    int nextAccount = 11111111111 + Random().nextInt(888888888) * 100 + Random().nextInt(88);
+    return nextAccount;
+  }
+
+  Future<void> createWallet(String accountName, bool spendingAccount) async{
+    int accountNumber = newAccountNumber();
+    Wallet wallet = Wallet(accountName, accountNumber, spendingAccount: spendingAccount, cardActive: spendingAccount);
     Map<String, dynamic> userData = {
       "accountName" : wallet.accountName,
       "balance" : wallet.balance,
       "spendingAccount" : wallet.spendingAccount,
       "cardActive" : wallet.cardActive,
+      "accountId" : accountNumber,
     };
-    var userPath = "users/$uid/accounts/$nextAccount";
-    var userLink = "userWallet/$nextAccount";
+    var userPath = "users/$uid/accounts/$accountNumber";
+    var userLink = "userWallet/$accountNumber";
     final documentReference1 = FirebaseFirestore.instance.doc(userPath);
     await documentReference1.set(userData);
     final documentReference2 = FirebaseFirestore.instance.doc(userLink);
     await documentReference2.set(
       {"owner": uid}
     );
-    nextAccount++;
-    Timestamp.now();
   }
 
 
@@ -39,10 +46,13 @@ class Database {
     return snapshots.map((snapshot) => snapshot.docs.map(
         (snapshot) {
           final data = snapshot.data();
+          print(data);
           return Wallet(
             data["accountName"],
+                data["accountId"],
                 balance: data["balance"],
-            spendingAccount: data["spendingAccount"]
+            spendingAccount: data["spendingAccount"],
+            cardActive: data["cardActive"]
           );
         }
     ).toList());
@@ -122,16 +132,14 @@ class Database {
 
 }
 class Wallet {
-  static int _walletNumber = 18225512351;
   final bool spendingAccount;
   bool cardActive = false;
   final int walletId;
   double balance;
   String accountName;
 
-  Wallet(this.accountName,
-      {this.balance = 1000.0, this.spendingAccount = false,this.cardActive = false})
-      : walletId = _walletNumber++;
+  Wallet(this.accountName, this.walletId,
+      {this.balance = 1000.0, this.spendingAccount = false,this.cardActive = false});
 }
 
 class Transaction {

@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../services/database.dart';
 
-class Overview extends StatelessWidget {
+class Overview extends StatefulWidget {
   const Overview({super.key});
 
+  @override
+  State<Overview> createState() => _OverviewState();
+}
+
+class _OverviewState extends State<Overview> {
   @override
   Widget build(context) {
     return Scaffold(
@@ -169,8 +174,12 @@ class Overview extends StatelessWidget {
                   const Text("Spending account:"),
                   const Spacer(),
                   Checkbox(
-                    value: true,
-                    onChanged: (value) => spendingAccount = value!,
+                    value: spendingAccount,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        spendingAccount = value!;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -183,10 +192,7 @@ class Overview extends StatelessWidget {
               ),
               child: const Text('Ok'),
               onPressed: () {
-                Database.getInstance().createWallet(
-                    Wallet(accountName,
-                        spendingAccount: spendingAccount,
-                    cardActive: spendingAccount));
+                Database.getInstance().createWallet(accountName,spendingAccount);
                 Navigator.of(context).pop();
               },
             ),
