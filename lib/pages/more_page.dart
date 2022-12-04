@@ -9,7 +9,7 @@ class MorePage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      Database.getInstance().uid = "";
+      Database.getInstance().uid = "0";
       Navigator.of(context, rootNavigator: true).pushReplacementNamed('login');
     } catch (e) {
       print(e);

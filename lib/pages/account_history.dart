@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../services/dummy_data.dart';
+
+import '../services/database.dart';
 
 class AccountHistory extends StatelessWidget {
   final Wallet wallet;
@@ -81,7 +82,7 @@ class AccountHistory extends StatelessWidget {
 
   Widget _buildTransactionItems() {
     return StreamBuilder<List<Transaction>>(
-        stream: wallet.fetchTransactions(),
+        stream: Database.getInstance().getTransactions(wallet.walletId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -96,8 +97,7 @@ class AccountHistory extends StatelessWidget {
   }
 
   Widget _transactionItem(Transaction transaction) {
-    Wallet wallet =
-        DummyData.getInstance().fetchWallet(transaction.destinationWalletID);
+    String destinationId = Database.getInstance().getWalletOwner(transaction.destinationWalletID);
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return Card(
         color: Colors.grey[200],
@@ -109,7 +109,7 @@ class AccountHistory extends StatelessWidget {
                   "${dateFormat.format(transaction.dateTime)} ${getWeekday(transaction.dateTime.weekday)}"),
               Row(
                 children: [
-                  Text(wallet.accountName),
+                  Text(destinationId),
                   const Spacer(),
                   Text("${transaction.amount}"),
                 ],

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database.dart';
-import '../services/dummy_data.dart';
 
 class Overview extends StatelessWidget {
   const Overview({super.key});
@@ -15,7 +14,9 @@ class Overview extends StatelessWidget {
         title: const Text("Overview"),
         actions: [
           IconButton(
-            onPressed: () {_newAccountDialog(context);},
+            onPressed: () {
+              _newAccountDialog(context);
+            },
             icon: const Icon(
               Icons.add,
               color: Colors.white,
@@ -32,7 +33,7 @@ class Overview extends StatelessWidget {
 
   Widget buildContent(BuildContext context) {
     return StreamBuilder<List<Wallet>>(
-        stream: DummyData.getInstance().getAllWalletsForUser(0),
+        stream: Database.getInstance().getWallets(),
         builder: (context, snapshot) {
           bool? empty = snapshot.data?.isEmpty;
           if (snapshot.hasData && !empty!) {
@@ -145,9 +146,36 @@ class Overview extends StatelessWidget {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
+        bool spendingAccount = true;
+        String accountName = "";
         return AlertDialog(
-          title: const Text('Create new account',
-          textAlign: TextAlign.center,),
+          title: const Text(
+            'Create new account',
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: "Account name",
+                ),
+                onChanged: (value) {
+                  accountName = value;
+                },
+              ),
+              Row(
+                children: [
+                  const Text("Spending account:"),
+                  const Spacer(),
+                  Checkbox(
+                    value: true,
+                    onChanged: (value) => spendingAccount = value!,
+                  ),
+                ],
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -155,7 +183,10 @@ class Overview extends StatelessWidget {
               ),
               child: const Text('Ok'),
               onPressed: () {
-                _createAccount(context);
+                Database.getInstance().createWallet(
+                    Wallet(accountName,
+                        spendingAccount: spendingAccount,
+                    cardActive: spendingAccount));
                 Navigator.of(context).pop();
               },
             ),
@@ -172,14 +203,5 @@ class Overview extends StatelessWidget {
         );
       },
     );
-  }
-
-  Future<void> _createAccount(BuildContext context) async {
-        await Database.getInstance().createAccount({
-        "accountName": "name",
-        "spendingsAccount": "spending",
-        "activeCard": "spending",
-        "balance" : 1000.0,
-    });
   }
 }
