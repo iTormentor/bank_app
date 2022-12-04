@@ -29,9 +29,11 @@ class _OverviewState extends State<Overview> {
           )
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [buildContent(context)],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [buildContent(context), const SizedBox(height: 50)],
+        ),
       ),
     );
   }

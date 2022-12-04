@@ -29,6 +29,7 @@ class _AuthFormState extends State<AuthForm> {
         child: Column(
           children: <Widget>[
             TextFormField(
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'Enter your email',
                 hintText: 'ex: test@gmail.com',

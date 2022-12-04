@@ -10,6 +10,7 @@ class MorePage extends StatelessWidget {
     try {
       await FirebaseAuth.instance.signOut();
       Database.getInstance().uid = "0";
+      Database.getInstance().cachedWallets = [];
       Navigator.of(context, rootNavigator: true).pushReplacementNamed('login');
     } catch (e) {
       print(e);
@@ -33,7 +34,7 @@ class MorePage extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Column(
-      children: [_menuItem("About me", SizedBox(), context)],
+      children: [_menuItem("About me", AboutPage(), context)],
     );
   }
 
@@ -46,7 +47,7 @@ class MorePage extends StatelessWidget {
         onPressed: () {Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AboutPage()));
+                builder: (context) => page));
         },
         child: Row(
           children: [

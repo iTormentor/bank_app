@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ class Database {
 
   static final Database _instance = Database._();
   String uid = "0";
+  List<Wallet> cachedWallets = [];
 
   static Database getInstance(){
     return _instance;
@@ -46,13 +48,42 @@ class Database {
     return snapshots.map((snapshot) => snapshot.docs.map(
         (snapshot) {
           final data = snapshot.data();
-          print(data);
-          return Wallet(
+          Wallet wallet =  Wallet(
             data["accountName"],
                 data["accountId"],
                 balance: data["balance"],
             spendingAccount: data["spendingAccount"],
             cardActive: data["cardActive"]
+          );
+          addWallet(wallet);
+          return wallet;
+        }
+    ).toList());
+  }
+
+  void addWallet(Wallet newWallet){
+    for (Wallet wallet in cachedWallets){
+      if(wallet.walletId == newWallet.walletId){
+        return;
+      }
+    }
+    cachedWallets.add(newWallet);
+  }
+
+
+  Future<Stream<List<Wallet>>> getWalletsAsFuture() async {
+    var path = "users/$uid/accounts";
+    final ref = FirebaseFirestore.instance.collection(path);
+    final snapshots = ref.snapshots();
+    return snapshots.map((snapshot) => snapshot.docs.map(
+            (snapshot) {
+          final data = snapshot.data();
+          return Wallet(
+              data["accountName"],
+              data["accountId"],
+              balance: data["balance"],
+              spendingAccount: data["spendingAccount"],
+              cardActive: data["cardActive"]
           );
         }
     ).toList());
