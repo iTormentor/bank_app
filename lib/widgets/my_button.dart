@@ -10,6 +10,7 @@ class MyButton extends StatelessWidget {
       {Key? key, required this.text, required this.onPressed, required this.color, required this.textColor})
       : super(key: key);
 
+  // Button used to login / register in the Auth screen
   @override
   Widget build(BuildContext context) {
     return SizedBox(

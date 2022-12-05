@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../services/database.dart';
+import '../../services/database.dart';
 
 class AccountHistory extends StatelessWidget {
   final Wallet wallet;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../widgets/send_money_widget.dart';
 
+
 class Transfer extends StatefulWidget {
   const Transfer({super.key});
 
   @override
   State<Transfer> createState() => _TransferState();
 }
-
 
 class _TransferState extends State<Transfer> {
 

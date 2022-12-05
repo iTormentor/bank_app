@@ -6,6 +6,8 @@ class User1 {
   User1({this.uid});
 }
 
+// Also pulled from https://github.com/TarekAlabd/Authentication-With-Amazing-UI-Flutter
+// Handles the logic when login in or registering in Firebase
 class AuthBase {
 
   User1? _userFromFirebase(User? user) {

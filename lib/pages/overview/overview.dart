@@ -1,8 +1,8 @@
-import 'package:bank_app/pages/account_history.dart';
+import 'package:bank_app/pages/overview/account_history.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../services/database.dart';
+import '../../services/database.dart';
 
 class Overview extends StatefulWidget {
   const Overview({super.key});

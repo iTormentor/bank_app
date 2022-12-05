@@ -6,6 +6,8 @@ import '../services/auth.dart';
 import '../services/database.dart';
 import 'my_button.dart';
 
+// pulled from https://github.com/TarekAlabd/Authentication-With-Amazing-UI-Flutter
+
 class AuthForm extends StatefulWidget {
   final AuthType authType;
 

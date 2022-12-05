@@ -1,5 +1,5 @@
-import 'package:bank_app/pages/more_page.dart';
-import 'package:bank_app/pages/overview.dart';
+import 'package:bank_app/pages/more/more_page.dart';
+import 'package:bank_app/pages/overview/overview.dart';
 import 'package:bank_app/pages/transfer_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,8 @@ enum TabItem {
   more
 }
 
+// Navigation bar used to navigate between the 4 main
+// pages inside the app
 class CustomNavigationBar extends StatelessWidget {
   const CustomNavigationBar({
     Key? key,

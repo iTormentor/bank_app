@@ -13,6 +13,9 @@ class MoveMoneyWidget extends StatefulWidget {
   State<MoveMoneyWidget> createState() => _MoveMoneyWidgetState();
 }
 
+// The layout for sending money, including account selectors, amountTextField
+// and the TransferButton.
+// Will also be used for "Payment" tab later
 class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
   _MoveMoneyWidgetState();
 
@@ -57,6 +60,8 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     );
   }
 
+  // Builds the card to hold the dropdown, and calls function to
+  // build the actual dropdown in child.
   Card _buildAccountSelectCard(String name, String key) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -90,11 +95,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     );
   }
 
+  // Builds the dropdown menu for the "From" selector
   DropdownButtonHideUnderline _buildFromDropdown() {
-    List<Wallet> walletList = Database
-        .getInstance()
-        .cachedWallets;
-
+    List<Wallet> walletList = Database.getInstance().cachedWallets;
     return DropdownButtonHideUnderline(
       child: DropdownButton<Wallet>(
         isExpanded: true,
@@ -119,11 +122,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     );
   }
 
+  //Builds the dropdown menu for the "To" dropdown
   DropdownButtonHideUnderline _buildToDropdown() {
-    List<Wallet> walletList = Database
-        .getInstance()
-        .cachedWallets;
-
+    List<Wallet> walletList = Database.getInstance().cachedWallets;
     return DropdownButtonHideUnderline(
       child: DropdownButton<Wallet>(
         isExpanded: true,
@@ -148,6 +149,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     );
   }
 
+  // Builds the "Transfer" button
   Widget _confirmButton(String buttonText) {
     return ElevatedButton(
         style: ButtonStyle(
@@ -173,6 +175,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
         ));
   }
 
+  // Checks if the user has valid input before transferring money
   bool checkValidInput(Wallet? toWallet, Wallet? fromWallet, double? amount) {
     if (toWallet == null || fromWallet == null || amount == null) {
       return false;
@@ -184,6 +187,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     return true;
   }
 
+  // Used to round the value in the "amount" textField to 2 decimals
   double? roundDouble(double? value) {
     num mod = pow(10, 2);
     if (value != null) {
@@ -193,6 +197,8 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
   }
 
 
+  // Displays a dialog to tell the user if the transaction was
+  // successful or not
   Future<void> _transactionMessage(BuildContext context, String title,
       String content) {
     return showDialog<void>(
@@ -227,6 +233,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
     );
   }
 
+  // The layout/widget of one dropdown item in the dropdown menu
   DropdownMenuItem<Wallet> _myDropDownItem(Wallet wallet) {
     return DropdownMenuItem<Wallet>(
       child: Column(

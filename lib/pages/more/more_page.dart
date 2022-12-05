@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../services/database.dart';
+import '../../services/database.dart';
 import 'about_page.dart';
 
 class MorePage extends StatelessWidget {
