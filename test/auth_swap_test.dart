@@ -14,10 +14,10 @@ void main() {
   Widget testWidget = const MediaQuery(data: MediaQueryData(), child: MaterialApp(
       home: MyApp()
   ));
-  testWidgets("Auth type changes when tapping *Don't have an account*", (WidgetTester tester) async {
+  testWidgets("Auth type changes when tapping *Don't have an account?*", (WidgetTester tester) async {
     await tester.pumpWidget(testWidget);
 
-    expect(find.text("Don\'t have an account?"), findsOneWidget);
+    expect(find.text("Don't have an account?"), findsOneWidget);
     expect(find.text("Already have an account?"), findsNothing);
 
     final Finder button = find.byKey(const Key("switchButton"));

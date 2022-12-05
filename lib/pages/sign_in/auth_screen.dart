@@ -17,22 +17,14 @@ class AuthScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Center(
-                  child: Column(
-                    children: const <Widget>[
-                      SizedBox(height: 65),
-                      Hero(
-                        tag: 'logoAnimation',
-                        child: Image(image: AssetImage("assets/images/BankLogo.jpg"))
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            const SizedBox(height: 65),
+            const Center(
+              child: Hero(
+                tag: 'logoAnimation',
+                child: Image(image: AssetImage("assets/images/BankLogo.jpg"))
+              ),
             ),
-            AuthForm(authType: authType),
+            AuthForm(authType: authType, key: const Key("Auth"),),
           ],
         ),
       ),
