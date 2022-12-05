@@ -34,7 +34,7 @@ class MorePage extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Column(
-      children: [_menuItem("About me", AboutPage(), context)],
+      children: [_menuItem("About me", const AboutPage(), context)],
     );
   }
 

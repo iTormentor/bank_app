@@ -1,16 +1,19 @@
 # bank_app
 
-Mobile application project
+Bank App
 
-## Getting Started
+## Introduction
 
-This project is a starting point for a Flutter application.
+Bank App originally made as a group project for the mobile appliactions course at
+NTNU Ålesund.
 
-A few resources to get you started if this is your first Flutter project:
+Unfortunately ended up being a solo project, as both my group members dropped out 
+of the course.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Info
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Still a work in progress, and therefore not available for download.
+
+The app is designed for use on Android. For easier implementation, it has not been taken 
+into consideration that iOS will run the app.
+

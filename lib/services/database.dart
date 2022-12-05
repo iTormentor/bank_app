@@ -188,11 +188,9 @@ class Database {
         if (snapshot.data() != null) {
           receiver = snapshot["owner"];
           return snapshot["owner"];
-        } else {
-          print(snapshot["owner"]);
         }
       });
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       return receiver;
     }
   }

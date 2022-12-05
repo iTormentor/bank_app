@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/move_money_widget.dart';
+import '../../widgets/send_money_widget.dart';
 
 class Transfer extends StatefulWidget {
   const Transfer({super.key});

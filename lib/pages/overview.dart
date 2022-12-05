@@ -50,8 +50,6 @@ class _OverviewState extends State<Overview> {
                   .toList(),
             );
           } if(snapshot.hasError){
-            print(snapshot.error);
-
             return _showNoAccounts();
           }
             else {

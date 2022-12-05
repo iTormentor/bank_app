@@ -38,7 +38,7 @@ class AccountHistory extends StatelessWidget {
                 color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
           _buildTransactionItems(),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -93,7 +93,6 @@ class AccountHistory extends StatelessWidget {
                   .toList(),
             );
           } else {
-            print(snapshot.error);
             return const Text("No transactions found");
           }
         });

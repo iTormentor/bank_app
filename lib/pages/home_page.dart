@@ -1,11 +1,9 @@
-import 'package:bank_app/services/tab_item.dart';
 import 'package:bank_app/widgets/nav_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'more_page.dart';
-
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }

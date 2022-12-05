@@ -86,7 +86,6 @@ class _AuthFormState extends State<AuthForm> {
               onPressed: () {
                 if (widget.authType == AuthType.login) {
                   Navigator.of(context).pushReplacementNamed('register');
-                  print(widget.authType);
                 } else {
                   Navigator.of(context).pushReplacementNamed('login');
                 }
