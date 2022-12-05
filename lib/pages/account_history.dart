@@ -16,7 +16,7 @@ class AccountHistory extends StatelessWidget {
         title: const Text('Account History'),
         elevation: 10.0,
       ),
-      body: _buildContent(),
+      body: SingleChildScrollView(child: _buildContent()),
       
     );
   }
@@ -37,7 +37,8 @@ class AccountHistory extends StatelessWidget {
             style: TextStyle(
                 color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
-          _buildTransactionItems()
+          _buildTransactionItems(),
+          SizedBox(height: 40),
         ],
       ),
     );
@@ -92,6 +93,7 @@ class AccountHistory extends StatelessWidget {
                   .toList(),
             );
           } else {
+            print(snapshot.error);
             return const Text("No transactions found");
           }
         });

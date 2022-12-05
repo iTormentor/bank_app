@@ -44,12 +44,11 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
       child: Card(
         color: Colors.grey[300],
         child: TextFormField(
-          keyboardType: TextInputType.numberWithOptions(decimal: false),
-          decoration: const InputDecoration(
-            labelText: "Amount",
-          ),
-          onChanged: (value) => {amount = double.tryParse(value)}
-        ),
+            keyboardType: TextInputType.numberWithOptions(decimal: false),
+            decoration: const InputDecoration(
+              labelText: "Amount",
+            ),
+            onChanged: (value) => {amount = double.tryParse(value)}),
       ),
     );
   }
@@ -149,10 +148,13 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
         ),
         onPressed: () {
-          if (fromWallet != null && toWallet != null ||
-              fromWallet?.walletId != toWallet?.walletId || amount != null) {
-            Database.getInstance()
-                .createFullTransaction(fromWallet!, toWallet!.walletId, amount!);
+          if (fromWallet == null || toWallet == null || amount == null) {
+            _transactionMessage(context, "Something went wrong",
+                "Potential problems: \n * Amount is not a valid number\n * You did not pick different accounts");
+          } else {
+            Database.getInstance().createTransferTransaction(
+                fromWallet!, toWallet!, amount!);
+            _transactionMessage(context, "Transaction successful!", "");
           }
         },
         child: Text(
@@ -160,6 +162,30 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
           style: getTextStyle(22),
         ));
   }
+}
+
+Future<void> _transactionMessage(
+    BuildContext context, String title, String content) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.labelLarge,
+            ),
+            child: const Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 TextStyle getTextStyle(double size) {

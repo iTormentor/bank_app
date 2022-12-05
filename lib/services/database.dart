@@ -77,7 +77,7 @@ class Database {
   void updateCachedWallet(Wallet wallet, double amount) {
     for (int i = 0; i < cachedWallets.length; i++) {
       if (cachedWallets[i].walletId == wallet.walletId) {
-        cachedWallets[i].balance += amount;
+        cachedWallets[i].balance = wallet.balance + amount;
       }
     }
   }
@@ -92,17 +92,16 @@ class Database {
     return name;
   }
 
-    Future<void> createFullTransaction(Wallet wallet, int destinationId,
+    Future<void> createTransferTransaction(Wallet fromWallet, Wallet toWallet,
         double balance) async {
-      addTransaction(uid, wallet.walletId, destinationId, -balance);
-      updateSelfBalance(wallet, -balance);
-      String receiver = await getWalletOwnerFuture(destinationId);
-      print(receiver);
-      if (receiver != "Unknown") {
-        addTransaction(
-            receiver.toString(), destinationId, wallet.walletId, balance);
-        updateReceiverBalance(destinationId, balance);
-      }
+
+      addTransaction(uid, fromWallet.walletId, toWallet.walletId, -balance);
+      updateSelfBalance(fromWallet, -balance);
+      updateCachedWallet(fromWallet, -balance);
+
+      addTransaction(uid, toWallet.walletId, fromWallet.walletId, balance);
+      updateSelfBalance(toWallet, balance);
+      updateCachedWallet(toWallet, balance);
     }
 
     Future<void> updateSelfBalance(Wallet wallet, double amount) async {
@@ -160,7 +159,7 @@ class Database {
                   (snapshot) {
                 final data = snapshot.data();
                 return Transaction(
-                    data["amount"],
+                    double.parse(data["amount"].toString()),
                     data["destinationWalletId"],
                     dateTime: data["dateTime"]
                 );
@@ -217,7 +216,11 @@ class Transaction {
   double amount;
   int destinationWalletID;
 
-  Transaction(this.amount, this.destinationWalletID, {dateTime});
+  Transaction(this.amount, this.destinationWalletID, {dateTime}){
+    if(dateTime != null){
+      this.dateTime = dateTime;
+    }
+  }
 
 }
 
