@@ -1,10 +1,8 @@
-# bank_app
-
-Bank App
+# Bank App
 
 ## Introduction
 
-Bank App originally made as a group project for the mobile appliactions course at
+Bank App originally made as a group project for the mobile applications course at
 NTNU Ålesund.
 
 Unfortunately ended up being a solo project, as both my group members dropped out 
