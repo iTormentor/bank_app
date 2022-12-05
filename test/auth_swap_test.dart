@@ -5,8 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:bank_app/pages/home_page.dart';
-import 'package:bank_app/pages/sign_in/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,10 +14,8 @@ void main() {
   Widget testWidget = const MediaQuery(data: MediaQueryData(), child: MaterialApp(
       home: MyApp()
   ));
-  testWidgets("Auth type changes when tapping Don't have an account", (WidgetTester tester) async {
+  testWidgets("Auth type changes when tapping *Don't have an account*", (WidgetTester tester) async {
     await tester.pumpWidget(testWidget);
-
-
 
     expect(find.text("Don\'t have an account?"), findsOneWidget);
     expect(find.text("Already have an account?"), findsNothing);

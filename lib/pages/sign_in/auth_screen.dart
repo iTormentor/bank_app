@@ -19,27 +19,10 @@ class AuthScreen extends StatelessWidget {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                ),
                 Center(
                   child: Column(
                     children: const <Widget>[
                       SizedBox(height: 65),
-                      Text(
-                        'Hello!',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1.2),
-                      ),
                       Hero(
                         tag: 'logoAnimation',
                         child: Image(image: AssetImage("assets/images/BankLogo.jpg"))
