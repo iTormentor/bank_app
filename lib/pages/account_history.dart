@@ -84,7 +84,8 @@ class AccountHistory extends StatelessWidget {
     return StreamBuilder<List<Transaction>>(
         stream: Database.getInstance().getTransactions(wallet.walletId),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          bool? empty = snapshot.data?.isEmpty;
+          if (snapshot.hasData && !empty!) {
             return Column(
               children: snapshot.data!
                   .map<Widget>((transaction) => _transactionItem(transaction))
@@ -96,9 +97,10 @@ class AccountHistory extends StatelessWidget {
         });
   }
 
-  Widget _transactionItem(Transaction transaction) {
-    String destinationId = Database.getInstance().getWalletOwner(transaction.destinationWalletID);
+    Widget _transactionItem(Transaction transaction)  {
+    String receiver = Database.getInstance().getWalletOwner(transaction.destinationWalletID);
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    DateTime dateTime = DateTime.parse(transaction.dateTime);
     return Card(
         color: Colors.grey[200],
         child: Padding(
@@ -106,10 +108,10 @@ class AccountHistory extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                  "${dateFormat.format(transaction.dateTime)} ${getWeekday(transaction.dateTime.weekday)}"),
+                  "${dateFormat.format(dateTime)} ${getWeekday(dateTime.weekday)}"),
               Row(
                 children: [
-                  Text(destinationId),
+                  Text(receiver),
                   const Spacer(),
                   Text("${transaction.amount}"),
                 ],
