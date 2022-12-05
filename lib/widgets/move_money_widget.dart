@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+import 'dart:math';
 import '../services/database.dart';
 
 enum WidgetState { transfer, payment }
@@ -48,7 +48,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
             decoration: const InputDecoration(
               labelText: "Amount",
             ),
-            onChanged: (value) => {amount = double.tryParse(value.replaceAll(",", "."))}),
+            onChanged: (value) =>
+            {amount = double.tryParse(value.replaceAll(",", ".")),
+              amount = roundDouble(amount)}),
       ),
     );
   }
@@ -62,7 +64,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
         children: [
           Card(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             color: Colors.red[200],
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -80,14 +82,16 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
           ),
           Expanded(
               child:
-                  name == "From" ? _buildFromDropdown() : _buildToDropdown()),
+              name == "From" ? _buildFromDropdown() : _buildToDropdown()),
         ],
       ),
     );
   }
 
   DropdownButtonHideUnderline _buildFromDropdown() {
-    List<Wallet> walletList = Database.getInstance().cachedWallets;
+    List<Wallet> walletList = Database
+        .getInstance()
+        .cachedWallets;
 
     return DropdownButtonHideUnderline(
       child: DropdownButton<Wallet>(
@@ -114,7 +118,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
   }
 
   DropdownButtonHideUnderline _buildToDropdown() {
-    List<Wallet> walletList = Database.getInstance().cachedWallets;
+    List<Wallet> walletList = Database
+        .getInstance()
+        .cachedWallets;
 
     return DropdownButtonHideUnderline(
       child: DropdownButton<Wallet>(
@@ -164,77 +170,89 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
   }
 
   bool checkValidInput(Wallet? toWallet, Wallet? fromWallet, double? amount) {
-    if(toWallet == null || fromWallet == null || amount == null){
+    if (toWallet == null || fromWallet == null || amount == null) {
       return false;
     } else if (fromWallet.walletId == toWallet.walletId) {
       return false;
-    } else if(fromWallet.balance < amount){
+    } else if (fromWallet.balance < amount) {
       return false;
     }
     return true;
   }
-}
 
-Future<void> _transactionMessage(
-    BuildContext context, String title, String content) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: <Widget>[
-          TextButton(
-            style: TextButton.styleFrom(
-              textStyle: Theme.of(context).textTheme.labelLarge,
+  double? roundDouble(double? value) {
+    num mod = pow(10, 2);
+    if (value != null) {
+      return ((value * mod).round().toDouble() / mod);
+    }
+    return null;
+  }
+
+
+  Future<void> _transactionMessage(BuildContext context, String title,
+      String content) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme
+                    .of(context)
+                    .textTheme
+                    .labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            child: const Text('Ok'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          ],
+        );
+      },
+    );
+  }
+
+  TextStyle getTextStyle(double size) {
+    return TextStyle(
+      fontSize: size,
+      fontWeight: FontWeight.w500,
+    );
+  }
+
+  DropdownMenuItem<Wallet> _myDropDownItem(Wallet wallet) {
+    return DropdownMenuItem<Wallet>(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Text(
+                wallet.accountName,
+                style: getTextStyle(16),
+              ),
+              const Spacer(),
+              Text(
+                wallet.balance.toStringAsFixed(2),
+                style: getTextStyle(16),
+              )
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Text(
+                wallet.walletId.toString(),
+                style: getTextStyle(14),
+              ),
+              const Spacer(),
+            ],
           ),
         ],
-      );
-    },
-  );
-}
-
-TextStyle getTextStyle(double size) {
-  return TextStyle(
-    fontSize: size,
-    fontWeight: FontWeight.w500,
-  );
-}
-
-DropdownMenuItem<Wallet> _myDropDownItem(Wallet wallet) {
-  return DropdownMenuItem<Wallet>(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          children: [
-            Text(
-              wallet.accountName,
-              style: getTextStyle(16),
-            ),
-            const Spacer(),
-            Text(
-              wallet.balance.toStringAsFixed(2),
-              style: getTextStyle(16),
-            )
-          ],
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Text(
-              wallet.walletId.toString(),
-              style: getTextStyle(14),
-            ),
-            const Spacer(),
-          ],
-        ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
