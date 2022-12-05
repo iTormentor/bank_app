@@ -5,26 +5,31 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:bank_app/pages/home_page.dart';
+import 'package:bank_app/pages/sign_in/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bank_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  Widget testWidget = const MediaQuery(data: MediaQueryData(), child: MaterialApp(
+      home: MyApp()
+  ));
+  testWidgets("Auth type changes when tapping Don't have an account", (WidgetTester tester) async {
+    await tester.pumpWidget(testWidget);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text("Don\'t have an account?"), findsOneWidget);
+    expect(find.text("Already have an account?"), findsNothing);
+
+    final Finder button = find.byKey(const Key("switchButton"));
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Don't have an account?"), findsNothing);
+    expect(find.text("Already have an account?"), findsOneWidget);
   });
 }

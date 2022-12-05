@@ -85,6 +85,7 @@ class _AuthFormState extends State<AuthForm> {
             ),
             const SizedBox(height: 6),
             ElevatedButton(
+              key: const Key("switchButton"),
               onPressed: () {
                 if (widget.authType == AuthType.login) {
                   Navigator.of(context).pushReplacementNamed('register');
