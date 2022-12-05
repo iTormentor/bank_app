@@ -28,7 +28,7 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
         children: [
           _buildAccountSelectCard("From", "from"),
           _buildAccountSelectCard("To", "to"),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildAmountTextField(),
@@ -44,11 +44,11 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
       child: Card(
         color: Colors.grey[300],
         child: TextFormField(
-            keyboardType: TextInputType.numberWithOptions(decimal: false),
+            keyboardType: const TextInputType.numberWithOptions(decimal: false),
             decoration: const InputDecoration(
               labelText: "Amount",
             ),
-            onChanged: (value) => {amount = double.tryParse(value)}),
+            onChanged: (value) => {amount = double.tryParse(value.replaceAll(",", "."))}),
       ),
     );
   }
@@ -148,9 +148,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
         ),
         onPressed: () {
-          if (fromWallet == null || toWallet == null || amount == null) {
+          if (!checkValidInput(toWallet, fromWallet, amount)) {
             _transactionMessage(context, "Something went wrong",
-                "Potential problems: \n * Amount is not a valid number\n * You did not pick different accounts");
+                "Potential problems: \n\n * Amount is not a valid number\n * You did not pick different accounts");
           } else {
             Database.getInstance().createTransferTransaction(
                 fromWallet!, toWallet!, amount!);
@@ -161,6 +161,17 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
           buttonText,
           style: getTextStyle(22),
         ));
+  }
+
+  bool checkValidInput(Wallet? toWallet, Wallet? fromWallet, double? amount) {
+    if(toWallet == null || fromWallet == null || amount == null){
+      return false;
+    } else if (fromWallet.walletId == toWallet.walletId) {
+      return false;
+    } else if(fromWallet.balance < amount){
+      return false;
+    }
+    return true;
   }
 }
 
@@ -208,7 +219,7 @@ DropdownMenuItem<Wallet> _myDropDownItem(Wallet wallet) {
             ),
             const Spacer(),
             Text(
-              wallet.balance.toString(),
+              wallet.balance.toStringAsFixed(2),
               style: getTextStyle(16),
             )
           ],
