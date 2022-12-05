@@ -55,7 +55,7 @@ class Database {
               Wallet wallet = Wallet(
                   data["accountName"],
                   data["accountId"],
-                  balance: data["balance"],
+                  balance: double.parse(data["balance"].toString()),
                   spendingAccount: data["spendingAccount"],
                   cardActive: data["cardActive"]
               );
@@ -74,93 +74,130 @@ class Database {
     cachedWallets.add(newWallet);
   }
 
-
-  Future<void> createFullTransaction(Wallet wallet, int destinationId,
-      double balance) async {
-    addTransaction(uid, wallet.walletId, destinationId, -balance);
-    updateSelfBalance(wallet.walletId, -balance);
-    String receiver = getWalletOwner(destinationId);
-    if (receiver != "Unknown") {
-      addTransaction(receiver, destinationId, wallet.walletId, balance);
-      updateReceiverBalance(destinationId, balance);
+  void updateCachedWallet(Wallet wallet, double amount) {
+    for (int i = 0; i < cachedWallets.length; i++) {
+      if (cachedWallets[i].walletId == wallet.walletId) {
+        cachedWallets[i].balance += amount;
+      }
     }
   }
 
-    Future<void> updateSelfBalance(int walletId, double amount) async {
-      var path = "users/$uid/accounts/$walletId";
-      final documentReference = FirebaseFirestore.instance.doc(path);
+  String findCachedWallet(int walletId) {
+    String name = "Unknown";
+    for (int i = 0; i < cachedWallets.length; i++) {
+      if (cachedWallets[i].walletId == walletId) {
+        name = cachedWallets[i].accountName;
+      }
+    }
+    return name;
+  }
 
-      await documentReference.update({"balance" : 2});
+    Future<void> createFullTransaction(Wallet wallet, int destinationId,
+        double balance) async {
+      addTransaction(uid, wallet.walletId, destinationId, -balance);
+      updateSelfBalance(wallet, -balance);
+      String receiver = await getWalletOwnerFuture(destinationId);
+      print(receiver);
+      if (receiver != "Unknown") {
+        addTransaction(
+            receiver.toString(), destinationId, wallet.walletId, balance);
+        updateReceiverBalance(destinationId, balance);
+      }
+    }
+
+    Future<void> updateSelfBalance(Wallet wallet, double amount) async {
+      var path = "users/$uid/accounts/${wallet.walletId}";
+      final documentReference = FirebaseFirestore.instance.doc(path);
+      documentReference.update({"balance": wallet.balance + amount});
+      updateCachedWallet(wallet, wallet.balance + amount);
     }
 
 
     Future<void> updateReceiverBalance(int walletId, double change) async {
-    String owner = getWalletOwner(walletId);
+      String owner = await getWalletOwnerFuture(walletId);
 
-    var path = "users/$owner/accounts/$walletId";
-    final documentReference = FirebaseFirestore.instance.doc(path);
-    double oldBalance = 0;
-    await getBalance(owner, walletId).then((value) => {oldBalance = value});
-    double newValue = oldBalance + change;
-    await documentReference.update({"balance" : newValue});
+      var path = "users/$owner/accounts/$walletId";
+      final documentReference = FirebaseFirestore.instance.doc(path);
+      double oldBalance = 0;
+      await getBalance(owner, walletId).then((value) => {oldBalance = value});
+      double newValue = oldBalance + change;
+      await documentReference.update({"balance": newValue});
+    }
+
+
+    Future<double> getBalance(String owner, int walletId) async {
+      var path = "users/$owner/accounts/$walletId";
+      final ref = FirebaseFirestore.instance.doc(path).get();
+      ref.then((DocumentSnapshot snapshot) {
+        if (snapshot.data() != null) {
+          return snapshot["balance"].toString();
+        }
+      });
+      return 0;
+    }
+
+    Future<void> addTransaction(String userId, int walletId, int destinationId,
+        double amount) async {
+      String date = DateTime.now().toString();
+
+      var path = "users/$userId/accounts/$walletId/transactions/$date";
+      final documentReference1 = FirebaseFirestore.instance.doc(path);
+
+      documentReference1.set({
+        "amount": amount,
+        "destinationWalletId": destinationId,
+        "dateTime": date,
+      });
+    }
+
+    Stream<List<Transaction>> getTransactions(int walletId) {
+      var path = "users/$uid/accounts/$walletId/transactions";
+      final ref = FirebaseFirestore.instance.collection(path).orderBy(
+          "dateTime", descending: true);
+      final snapshots = ref.snapshots();
+      return snapshots.map((snapshot) =>
+          snapshot.docs.map(
+                  (snapshot) {
+                final data = snapshot.data();
+                return Transaction(
+                    data["amount"],
+                    data["destinationWalletId"],
+                    dateTime: data["dateTime"]
+                );
+              }
+          ).toList());
+    }
+
+    String getWalletOwner(int walletId) {
+      var path = "userWallet/$walletId";
+      final ref = FirebaseFirestore.instance.doc(path).get();
+      String receiver = "Unknown";
+      ref.then((DocumentSnapshot snapshot) {
+        if (snapshot.data() != null) {
+          return snapshot["owner"].toString();
+        }
+      });
+      return receiver;
+    }
+
+
+    Future<String> getWalletOwnerFuture(int walletId) async {
+      var path = "userWallet/$walletId";
+      final ref = FirebaseFirestore.instance.doc(path).get();
+      String receiver = "Unknown";
+      await ref.then((DocumentSnapshot snapshot) {
+        if (snapshot.data() != null) {
+          receiver = snapshot["owner"];
+          return snapshot["owner"];
+        } else {
+          print(snapshot["owner"]);
+        }
+      });
+      await Future.delayed(Duration(seconds: 2));
+      return receiver;
+    }
   }
 
-
-  Future<double> getBalance(String owner, int walletId) async {
-    var path = "users/$owner/accounts/$walletId";
-    final ref = FirebaseFirestore.instance.doc(path).get();
-    ref.then((DocumentSnapshot snapshot) {
-      if (snapshot.data() != null) {
-        return snapshot["balance"].toString();
-      }
-    });
-    return 0;
-  }
-
-  Future<void> addTransaction(String userId, int walletId, int destinationId,
-      double balance) async {
-    var path = "users/$userId/accounts/$walletId/transactions";
-    String date = DateTime.now().toString();
-    CollectionReference transactions = FirebaseFirestore.instance.collection(
-        path);
-    //final documentReference1 = FirebaseFirestore.instance.doc(path1);
-    await transactions.add({
-      "amount": balance,
-      "destinationWalletId": destinationId,
-      "dateTime": date,
-    });
-  }
-
-  Stream<List<Transaction>> getTransactions(int walletId) {
-    var path = "users/$uid/accounts/$walletId/transactions";
-    final ref = FirebaseFirestore.instance.collection(path);
-    final snapshots = ref.snapshots();
-    return snapshots.map((snapshot) =>
-        snapshot.docs.map(
-                (snapshot) {
-              final data = snapshot.data();
-              return Transaction(
-                  data["amount"],
-                  data["destinationWalletId"],
-                  dateTime: data["dateTime"]
-              );
-            }
-        ).toList());
-  }
-
-    String getWalletOwner(int walletId)  {
-    var path = "userWallet/$walletId";
-    final ref = FirebaseFirestore.instance.doc(path).get();
-    String receiver = "Unknown";
-    ref.then((DocumentSnapshot snapshot) {
-      if (snapshot.data() != null) {
-        return snapshot["owner"].toString();
-      }
-    });
-    return receiver;
-  }
-
-}
 
 
 

@@ -49,7 +49,12 @@ class _OverviewState extends State<Overview> {
                   .map<Widget>((wallet) => _walletItem(context, wallet))
                   .toList(),
             );
-          } else {
+          } if(snapshot.hasError){
+            print(snapshot.error);
+
+            return _showNoAccounts();
+          }
+            else {
             return _showNoAccounts();
           }
         });

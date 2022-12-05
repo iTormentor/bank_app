@@ -88,7 +88,7 @@ class AccountHistory extends StatelessWidget {
           if (snapshot.hasData && !empty!) {
             return Column(
               children: snapshot.data!
-                  .map<Widget>((transaction) => _transactionItem(transaction))
+                  .map<Widget>((transaction) =>  _transactionItem(transaction))
                   .toList(),
             );
           } else {
@@ -97,8 +97,8 @@ class AccountHistory extends StatelessWidget {
         });
   }
 
-    Widget _transactionItem(Transaction transaction)  {
-    String receiver = Database.getInstance().getWalletOwner(transaction.destinationWalletID);
+    Widget _transactionItem(Transaction transaction) {
+    String receiver = Database.getInstance().findCachedWallet(transaction.destinationWalletID);
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     DateTime dateTime = DateTime.parse(transaction.dateTime);
     return Card(
