@@ -14,6 +14,6 @@ of the course.
 
 Still a work in progress, and therefore not available for download.
 
-The app is designed for use on Android. For easier implementation, it has not been taken 
+The app is designed for use on Android. It has not been taken 
 into consideration that iOS will run the app.
 
