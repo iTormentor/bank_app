@@ -43,14 +43,16 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
       alignment: Alignment.center,
       child: Card(
         color: Colors.grey[300],
-        child: TextFormField(
-            keyboardType: const TextInputType.numberWithOptions(decimal: false),
-            decoration: const InputDecoration(
-              labelText: "Amount",
-            ),
-            onChanged: (value) =>
-            {amount = double.tryParse(value.replaceAll(",", ".")),
-              amount = roundDouble(amount)}),
+        child: SizedBox(width: 200,
+          child: TextFormField(
+              keyboardType: const TextInputType.numberWithOptions(decimal: false),
+              decoration: const InputDecoration(
+                labelText: "Amount",
+              ),
+              onChanged: (value) =>
+              {amount = double.tryParse(value.replaceAll(",", ".")),
+                amount = roundDouble(amount)}),
+        ),
       ),
     );
   }
@@ -156,7 +158,9 @@ class _MoveMoneyWidgetState extends State<MoveMoneyWidget> {
         onPressed: () {
           if (!checkValidInput(toWallet, fromWallet, amount)) {
             _transactionMessage(context, "Something went wrong",
-                "Potential problems: \n\n * Amount is not a valid number\n * You did not pick different accounts");
+                "Potential problems: \n\n * Amount is not a valid number\n"
+                    " * You did not pick different accounts\n"
+                    " * You don't have enough money");
           } else {
             Database.getInstance().createTransferTransaction(
                 fromWallet!, toWallet!, amount!);
